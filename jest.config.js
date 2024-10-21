@@ -26,6 +26,22 @@ const config = {
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
 
+  /* reporters: [
+    "default",
+    ["./node_modules/jest-html-reporter", {
+      "pageTitle": "Test Report"
+    }]
+  ], */
+
+  setupFiles: ['./config/global.js'],
+
+  testTimeout: 60000,
+
+  moduleNameMapper: {
+    'schemas/(.*)': '<rootDir>/schemas/$1',
+    'utils/(.*)': '<rootDir>/utils/$1'
+  }
+
 };
 
 module.exports = config;

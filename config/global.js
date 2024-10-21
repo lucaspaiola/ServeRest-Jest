@@ -1,6 +1,5 @@
-/* eslint-disable no-undef */
-import request from 'supertest'
-import tags from '../utils/tags'
+const request = require('supertest')
+const tags = require('../utils/tags')
 
 global.request = request
 global.tags = tags

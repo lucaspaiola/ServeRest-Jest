@@ -1,0 +1,10 @@
+{
+  "include": ["config/global.d.ts", "tests/**/*.js"],
+  "compilerOptions": {
+    "baseUrl": "",
+    "paths": {
+      "schemas/*": ["schemas/*"],
+      "utils/*": ["utils/*"]
+    }
+  }
+}
