@@ -1,11 +1,9 @@
-const joi = require('joi')
 const dotenv = require('dotenv')
-
-const schemas = require('schemas/usuarios/schema-post-usuarios')
 
 const route = '/usuarios'
 
 let resp
+let user_id
 
 describe('Sign up users', () => {
   beforeAll(() => {
@@ -25,6 +23,7 @@ describe('Sign up users', () => {
     }
 
     resp = await request(process.env.BASE_URL).post(route).set(headers).send(body)
+    user_id = resp.body._id
     expect(resp.status).toBe(201)
   })
 
@@ -86,6 +85,17 @@ describe('Sign up users', () => {
 
     resp = await request(process.env.BASE_URL).patch(route).set(headers).send(body)
     expect(resp.status).toBe(405)
+  })
+
+  afterAll(async () => {
+    // deletes the created user
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+
+    if(user_id) {
+      resp = await request(process.env.BASE_URL).delete(`usuarios/${user_id}`).set(headers)
+    }
   })
 })
 
