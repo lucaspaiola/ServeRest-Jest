@@ -2,10 +2,12 @@ const joi = require('joi')
 const dotenv = require('dotenv')
 
 const schemas = require('schemas/usuarios/schema-post-usuarios')
+const { deleteUser } = require('../../utils/functions')
 
 const route = '/usuarios'
 
 let resp
+let user_id
 
 describe('Sign up users', () => {
   beforeAll(() => {
@@ -18,13 +20,14 @@ describe('Sign up users', () => {
     }
 
     const body = {
-      nome: 'Fulano de Teste',
-      email: 'usuarioTestee@gmail.com',
-      password: 'SenhaForte123@',
+      nome: 'User Test',
+      email: 'usertest@hotmail.com',
+      password: 'StrongPassword@123',
       administrador: 'false'
     }
 
     resp = await request(process.env.BASE_URL).post(route).set(headers).send(body)
+    user_id = resp.body._id
     joi.assert(resp.body, schemas.ok)
   })
 
@@ -39,5 +42,9 @@ describe('Sign up users', () => {
 
     resp = await request(process.env.BASE_URL).post(route).set(headers).send(body)
     joi.assert(resp.body, schemas.badRequest)
+  })
+
+  afterAll(() => {
+    deleteUser(user_id)
   })
 })
