@@ -1,6 +1,7 @@
 const joi = require('joi')
 const dotenv = require('dotenv')
 const schemas = require('schemas/usuarios/schema-delete-usuarios')
+const { createUser } = require('../../utils/functions')
 
 const route = '/usuarios/'
 
@@ -11,20 +12,12 @@ describe('Delete users', () => {
   beforeAll( async () => {
     dotenv.config() // setup environment variables
 
-    // create a user
-    const headers = {
-      'Content-Type': 'application/json'
-    }
+    // createUser() returns the user_id of the created user
+    user_id = createUser('Should be deleted', 'shouldbedeleted@hotmail.com', 'NoPassword123', 'false')
 
-    const body = {
-      nome: 'Should be deleted',
-      email: 'deleteuser@gmail.com',
-      password: 'SenhaForte123@',
-      administrador: 'false'
+    if (!user_id) {
+      throw new Error('Failed to create a new user');
     }
-
-    resp = await request(process.env.BASE_URL).post('/usuarios').set(headers).send(body)
-    user_id = resp.body._id
   })
 
   it('Validate success schema ' + tags.contract, async () => {

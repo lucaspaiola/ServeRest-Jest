@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+const { deleteUser, createUser } = require('../../utils/functions')
 
 const route = '/usuarios'
 
@@ -16,9 +17,9 @@ describe('Sign up users', () => {
     }
 
     const body = {
-      nome: 'Usuario de Teste',
-      email: 'usuarioTestee@gmail.com',
-      password: 'SenhaForte123@',
+      nome: 'User Test',
+      email: 'usertest@gmail.com',
+      password: 'StrongPassword123@',
       administrador: 'false'
     }
 
@@ -88,14 +89,7 @@ describe('Sign up users', () => {
   })
 
   afterAll(async () => {
-    // deletes the created user
-    const headers = {
-      'Content-Type': 'application/json'
-    }
-
-    if(user_id) {
-      resp = await request(process.env.BASE_URL).delete(`usuarios/${user_id}`).set(headers)
-    }
+    deleteUser(user_id)
   })
 })
 
@@ -103,34 +97,29 @@ describe('User already exists', () => {
   beforeAll(async () => {
     dotenv.config() // setup environment variables
 
-    const headers = {
-      'Content-Type': 'application/json'
-    }
-
-    const body = {
-      nome: 'Usuario Existente',
-      email: 'usuarioexistente@gmail.com',
-      password: 'SenhaForte123@',
-      administrador: 'false'
-    }
-
-    resp = await request(process.env.BASE_URL).post(route).set(headers).send(body)
+    // createUser() returns the user_id of the created user
+    user_id = createUser('UserName', 'newuser@gmail.com', 'StrongPassword123', 'false')
   })
 
-  it('Validate status code 400, user already exists' + tags.functional, async () => {
+  it('Validate status code 400, email already exists' + tags.functional, async () => {
     const headers = {
       'Content-Type': 'application/json'
     }
 
     const body = {
-      nome: 'Usuario Existente',
-      email: 'usuarioexistente@gmail.com',
-      password: 'SenhaForte123@',
+      nome: 'UserName',
+      email: 'newuser@gmail.com',
+      password: 'StrongPassword123',
       administrador: 'false'
     }
 
     resp = await request(process.env.BASE_URL).post(route).set(headers).send(body)
     expect(resp.status).toBe(400)
     expect(resp.body.message).toBe('Este email já está sendo usado')
+  })
+
+  afterAll(async () => {
+    // deletes the created user
+    deleteUser(user_id)
   })
 })
